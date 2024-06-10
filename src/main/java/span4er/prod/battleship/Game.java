@@ -4,6 +4,8 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class Game {
+    static final int SHIPS_TO_DESTROY = 5;
+    static final int SHIPS_TO_PLANT_EACH_BOARD = 5;
     static Scanner input = new Scanner(System.in);
     static boolean isEnd = false;
     static Player playerOne;
@@ -37,16 +39,12 @@ public class Game {
     }
 
     public static void buildBoard(BattleShipBoard board){
-        int countFourDeck = 1;
-        int countThreeDeck = 2;
-        int countTwoDeck = 3;
-        int countOneDeck = 4;
-        int countShips = 3;
+        int countShips = SHIPS_TO_PLANT_EACH_BOARD;
         while(countShips > 0){
             try {
                 BattleShipBoard.printBoardForFriend(board);
                 System.out.printf("Осталось %d четырёх палубных, %d трёх палубных, %d двух палубных, %d одно палубных%n",
-                        countFourDeck, countThreeDeck, countTwoDeck, countOneDeck);
+                        board.getCountFourDeck(), board.getCountThreeDeck(), board.getCountTwoDeck(), board.getCountOneDeck());
                 System.out.println("Введите координаты корабля (формат: x,y;x,y;...");
                 String[] bufCells = input.next().split(";");
                 Cell[] placement = new Cell[bufCells.length];
@@ -62,24 +60,6 @@ public class Game {
                     continue;
                 }
                 countShips--;
-                switch (bufCells.length) {
-                    case 1: {
-                        countOneDeck--;
-                        break;
-                    }
-                    case 2: {
-                        countTwoDeck--;
-                        break;
-                    }
-                    case 3: {
-                        countThreeDeck--;
-                        break;
-                    }
-                    case 4: {
-                        countFourDeck--;
-                        break;
-                    }
-                }
             }
             catch (ShipException e){
                 System.out.println(e.getMessage());
@@ -112,12 +92,12 @@ public class Game {
     }
 
     public static void checkGameEnd(){
-        if(playerOneBoard.getDestroyedShips() == 3){
+        if(playerOneBoard.getDestroyedShips() == SHIPS_TO_DESTROY){
             System.out.printf("Победил игрок %s, игрок %s удачи в следующий раз",playerTwo.getUsername(),playerOne.getUsername());
             isEnd = true;
             exit();
         }
-        else if(playerTwoBoard.getDestroyedShips() == 3){
+        else if(playerTwoBoard.getDestroyedShips() == SHIPS_TO_DESTROY){
             System.out.printf("Победил игрок %s, игрок %s удачи в следующий раз",playerOne.getUsername(),playerTwo.getUsername());
             isEnd = true;
             exit();

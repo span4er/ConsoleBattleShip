@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BattleShipBoard {
+
+    private int countFourDeck = 1;
+    private int countThreeDeck = 2;
+    private int countTwoDeck = 3;
+    private int countOneDeck = 4;
     private Cell[][] sea = new Cell[10][10];
     private List<Ship> ships;
     private int destroyedShips = 0;
@@ -14,6 +19,22 @@ public class BattleShipBoard {
 
     public Cell[][] getSea() {
         return sea;
+    }
+
+    public int getCountFourDeck() {
+        return countFourDeck;
+    }
+
+    public int getCountThreeDeck() {
+        return countThreeDeck;
+    }
+
+    public int getCountTwoDeck() {
+        return countTwoDeck;
+    }
+
+    public int getCountOneDeck() {
+        return countOneDeck;
     }
 
     public BattleShipBoard(){
@@ -39,6 +60,7 @@ public class BattleShipBoard {
     public boolean tryAddShip(Ship ship){
         try{
             checkCountDecks(ship);
+            checkShipAvailable(ship);
             checkCellsEmpty(ship);
             checkShipComplete(ship);
             checkOreol(ship);
@@ -49,9 +71,43 @@ public class BattleShipBoard {
         }
         return true;
     }
+
     public static void checkCountDecks(Ship ship) throws ShipException{
         if(ship.getCountDecks() > 4 || ship.getCountDecks() < 1) {
             throw new ShipException("Невозможное кол-во палуб у корабля");
+        }
+    }
+
+    public void checkShipAvailable(Ship ship) throws ShipException{
+        switch (ship.getCountDecks()) {
+            case 1: {
+                if(countOneDeck > 0)
+                    countOneDeck--;
+                else
+                    throw new ShipException("Лимит однопалубных кораблей");
+                break;
+            }
+            case 2: {
+                if(countTwoDeck > 0)
+                    countTwoDeck--;
+                else
+                    throw new ShipException("Лимит двухпалубных кораблей");
+                break;
+            }
+            case 3: {
+                if(countThreeDeck > 0)
+                    countThreeDeck--;
+                else
+                    throw new ShipException("Лимит трёхпалубных кораблей");
+                break;
+            }
+            case 4: {
+                if(countFourDeck > 0)
+                    countFourDeck--;
+                else
+                    throw new ShipException("Лимит четырёхпалубных кораблей");
+                break;
+            }
         }
     }
 
@@ -180,7 +236,7 @@ public class BattleShipBoard {
     public static void printBoards(BattleShipBoard ownBoard, BattleShipBoard enemyBoard){
         System.out.println("Поле противника:\t\tВаше поле");
         for(int i = 0;i < 10;i++){
-            System.out.printf("%2d",i);
+            System.out.printf("%2d",i + 1);
             for(int j = 0;j < 10;j++){
                 if(enemyBoard.sea[i][j].getCellType().name().equals("SHIP"))  System.out.print(CellType.BLANK.getCode());
                 else
